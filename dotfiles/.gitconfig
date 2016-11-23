@@ -1,0 +1,6 @@
+[alias]
+	co = checkout
+	b = rev-parse --abbrev-ref HEAD
+[push]
+	default = simple
+
