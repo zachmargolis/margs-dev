@@ -9,6 +9,7 @@ Plugins:
 - Markdown Preview
 - MarkdownTOC
 - Modific
+- TrailingSpaces
 
 ## Dotfiles
 
