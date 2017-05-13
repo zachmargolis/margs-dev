@@ -15,4 +15,6 @@ Plugins:
 
 - `.bash_profile`
   - set prompt to include git branch
+- `.inputrc`
+  - set case-insensitive autocompletion
 
