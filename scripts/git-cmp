@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+require 'uri'
+
+Config = Struct.new(
+  :host, # github.com
+  :repo, # zachmargolis/margs-dev
+)
+
+# https://github.com/zachmargolis/margs-dev.git
+def parse_https_url(url)
+  uri = URI.parse(url)
+  Config.new(uri.host, clean_up_path(uri.path))
+end
+
+# git@github.com:zachmargolis/margs-dev.git
+def parse_git_url(url)
+  _git, rest = url.split('@', 2)
+  host, path = rest.split(':', 2)
+  Config.new(host, clean_up_path(path))
+end
+
+# "/zachmargolis/margs-dev.git" => "zachmargolis/margs-dev"
+def clean_up_path(path)
+  path.gsub(%r|^/|, '').chomp('.git')
+end
+
+origin_url = `git remote get-url origin`.chomp
+branch_name = `git rev-parse --abbrev-ref HEAD`.chomp
+
+config = begin
+  parse_https_url(origin_url)
+rescue URI::InvalidURIError
+  parse_git_url(origin_url)
+end
+
+compare_url = "https://#{config.host}/#{config.repo}/compare/#{branch_name}"
+
+system('open', compare_url)
