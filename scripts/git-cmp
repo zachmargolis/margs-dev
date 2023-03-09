@@ -1,4 +1,10 @@
 #!/usr/bin/env ruby
+# Usage:
+#
+#   git cmp [BRANCH]
+#
+#   Opens a GitHub compare view, optionally against a specific [BRANCH]
+
 require 'uri'
 
 Config = Struct.new(
@@ -33,6 +39,12 @@ rescue URI::InvalidURIError
   parse_git_url(origin_url)
 end
 
-compare_url = "https://#{config.host}/#{config.repo}/compare/#{branch_name}"
+from_branch = ARGV.first
+compare_url = if from_branch
+  "https://#{config.host}/#{config.repo}/compare/#{from_branch}...#{branch_name}"
+else
+  "https://#{config.host}/#{config.repo}/compare/#{branch_name}"
+end
+
 
 system('open', compare_url)
