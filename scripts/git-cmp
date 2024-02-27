@@ -30,6 +30,14 @@ def clean_up_path(path)
   path.gsub(%r|^/|, '').chomp('.git')
 end
 
+def github_compare_url(config, branch_name, from_branch = nil)
+  "https://#{config.host}/#{config.repo}/compare/" + (from_branch ? "#{from_branch}...#{branch_name}" : branch_name)
+end
+
+def gitlab_compare_url(config, branch_name, from_branch = nil)
+  "https://#{config.host}/#{config.repo}/-/compare/#{from_branch || 'main'}...#{branch_name}"
+end
+
 origin_url = `git remote get-url origin`.chomp
 branch_name = `git rev-parse --abbrev-ref HEAD`.chomp
 
@@ -40,11 +48,10 @@ rescue URI::InvalidURIError
 end
 
 from_branch = ARGV.first
-compare_url = if from_branch
-  "https://#{config.host}/#{config.repo}/compare/#{from_branch}...#{branch_name}"
+compare_url = if config.host.include?('github')
+  github_compare_url(config, branch_name, from_branch)
 else
-  "https://#{config.host}/#{config.repo}/compare/#{branch_name}"
+  gitlab_compare_url(config, branch_name, from_branch)
 end
-
 
 system('open', compare_url)
