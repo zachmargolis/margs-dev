@@ -1,4 +1,4 @@
 #!/bin/bash
 files=$(git diff origin/main --name-only | grep -E '\.rb$' | grep -v db)
 echo "$files"
-echo "$files" | xargs git ls-files | xargs bundle exec rubocop
+echo "$files" | xargs git ls-files | xargs bundle exec rubocop "$@"
